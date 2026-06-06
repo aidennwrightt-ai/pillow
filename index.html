@@ -88,9 +88,10 @@ textarea{resize:vertical;min-height:64px;line-height:1.5;}
 .tag.not-ideal{border-color:#f5c26b;color:#8a5a00;background:#fffaf0;}
 
 /* SWATCHES */
-.swatch-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
-.swatch{height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
-.swatch:hover{transform:scale(1.1);}
+.swatch-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;}
+.swatch{height:24px;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .15s;position:relative;}
+.swatch:hover{transform:scale(1.12);}
+.swatch:hover::after{content:attr(title);position:absolute;bottom:28px;left:50%;transform:translateX(-50%);background:var(--ink);color:white;font-size:9px;padding:2px 6px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:10;}
 .swatch.active{border-color:var(--terra);box-shadow:0 0 0 2px white,0 0 0 4px var(--terra);}
 .swatch.disabled{opacity:.25;pointer-events:none;}
 .color-label{font-size:10px;color:var(--muted);margin-top:5px;}
@@ -100,6 +101,42 @@ textarea{resize:vertical;min-height:64px;line-height:1.5;}
 .gen-btn{width:100%;background:var(--terra);color:white;border:none;border-radius:8px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:background .18s;}
 .gen-btn:hover{background:#a84e30;}
 .gen-btn:disabled{background:var(--muted);cursor:not-allowed;}
+
+/* SEO SECTION */
+.seo-section{padding:20px 24px;background:var(--cream);border-top:2px solid var(--border);display:none;flex-shrink:0;}
+.seo-section.on{display:block;}
+.seo-section-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.seo-section-sub{font-size:11px;color:var(--muted);margin-bottom:14px;}
+.seo-gen-btn{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:white;border:none;border-radius:8px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:background .18s;margin-bottom:16px;}
+.seo-gen-btn:hover{background:#6a4d94;}
+.seo-gen-btn:disabled{background:var(--muted);cursor:not-allowed;}
+.seo-copy-all{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:background .18s;margin-bottom:16px;margin-left:6px;}
+.seo-copy-all:hover{background:#b8945a;}
+.seo-prog{display:none;margin-bottom:12px;}
+.seo-prog.on{display:block;}
+.seo-prog-track{background:var(--border);border-radius:10px;height:3px;overflow:hidden;}
+.seo-prog-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--gold));border-radius:10px;width:0;transition:width .4s;}
+.seo-prog-msg{font-size:11px;color:var(--muted);text-align:center;margin-top:4px;}
+.seo-outputs{display:flex;flex-direction:column;gap:10px;}
+.seo-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.seo-card-hdr{padding:9px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:white;}
+.seo-card-hdr h4{font-size:11px;font-weight:500;color:var(--brown);}
+.seo-card-right{display:flex;align-items:center;gap:6px;}
+.seo-char{font-size:9px;padding:2px 6px;border-radius:4px;border:1px solid var(--border);color:var(--muted);}
+.seo-char.good{background:#EDF5EE;color:#2e7d32;border-color:#9fd9a5;}
+.seo-char.over{background:#FDECEA;color:#8b2a1a;border-color:#f5b8b2;}
+.seo-copy{background:transparent;border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;color:var(--brown);transition:all .15s;}
+.seo-copy:hover{border-color:var(--terra);color:var(--terra);}
+.seo-field{width:100%;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--brown);background:transparent;line-height:1.6;padding:10px 13px;resize:none;}
+.seo-kw-wrap{padding:10px 13px;display:flex;flex-wrap:wrap;gap:5px;}
+.kw-chip{padding:3px 9px;border-radius:20px;font-size:11px;}
+.kw-pri{background:#FDF0EA;border:1px solid #f5c2a8;color:#7a3010;}
+.kw-sec{background:#EDF5EE;border:1px solid #9fd9a5;color:#2a5e30;}
+.kw-lng{background:#EEEDFE;border:1px solid #AFA9EC;color:#3C3489;}
+.seo-score-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.seo-sc{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center;}
+.seo-sc-num{font-size:18px;font-weight:500;font-family:'Cormorant Garamond',serif;color:var(--sage);}
+.seo-sc-lbl{font-size:9px;color:var(--muted);line-height:1.4;}
 
 /* MAIN */
 .main{overflow-y:auto;max-height:calc(100vh - 49px);display:flex;flex-direction:column;}
@@ -343,7 +380,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5;}
   <div class="sblock">
     <span class="slabel">Color Palette <span style="color:var(--terra);font-size:9px;" id="colorNote"></span></span>
     <div class="swatch-grid" id="swatchGrid"></div>
-    <div class="color-label">Selected: <span id="colorLabel">Terracotta & Rust</span></div>
+    <div class="color-label">Selected: <span id="colorLabel">Terracotta</span></div>
   </div>
 
   <!-- Generate -->
@@ -415,12 +452,23 @@ textarea{resize:vertical;min-height:64px;line-height:1.5;}
           <table class="var-tbl"><thead><tr><th>Size</th><th>Base Cost</th><th>Retail</th><th>Profit</th><th>Vendor</th></tr></thead>
           <tbody id="varBody"></tbody></table>
           <div class="psheet-btns">
-            <button class="ps-btn dl" onclick="dlSelected()">⬇ Download</button>
-            <button class="ps-btn seo" onclick="copySEO()">📋 SEO Title</button>
-            <button class="ps-btn desc" onclick="copyDesc()">📝 Description</button>
+            <button class="ps-btn dl" onclick="dlSelected()">⬇ Download Design</button>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- SEO SECTION -->
+    <div class="seo-section" id="seoSection">
+      <div class="seo-section-title">✦ SEO Content Generator</div>
+      <div class="seo-section-sub">Generate all 12 SEO outputs for this design — titles, meta tags, descriptions, keywords, Pinterest copy and more. Never reveals POD origins.</div>
+      <button class="seo-gen-btn" id="seoGenBtn" onclick="generateSEOContent()">✦ Generate All SEO Content</button>
+      <button class="seo-copy-all" id="seoCopyAll" onclick="seosCopyAll()" style="display:none">⎘ Copy All</button>
+      <div class="seo-prog" id="seoProgWrap">
+        <div class="seo-prog-track"><div class="seo-prog-fill" id="seoProgFill"></div></div>
+        <div class="seo-prog-msg" id="seoProgMsg">Writing premium content...</div>
+      </div>
+      <div id="seoOutputs"></div>
     </div>
   </div>
 
@@ -529,8 +577,8 @@ const PILLOWS = [
     tipType:'warn',
     goodStyles:['Geometric','Ikat / Aztec','Japandi','Vintage Damask','Line Art'],
     avoidStyles:['Watercolor','Maximalist Floral','Abstract Art','Boho Mandala','Tropical Leaves','Celestial','Patchwork','Animal Print','Typography'],
-    goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Deep Brown','Deep Teal','Black & Charcoal'],
-    avoidColors:['Blush Pink','Dusty Lavender','Multi-color Earthy','Cream & Ivory'],
+    goodColors:['Black','Brown','Green','Gray','Orange','Red','Teal','Neutrals','Terracotta'],
+    avoidColors:['Pink','Purple','Colorful','White','Cream & Gold','Yellow'],
     promptSuffix:'FLAT SURFACE PATTERN ONLY — NOT a pillow photo, NOT a mockup. Generate a flat square jacquard-style textile repeat pattern, bold geometric, maximum 6 solid flat colours, hard edges no gradients, high contrast, no text no borders no product shape'
   },
   {
@@ -543,8 +591,8 @@ const PILLOWS = [
     tipType:'warn',
     goodStyles:['Botanical','Watercolor','Japandi','Line Art','Patchwork','Celestial'],
     avoidStyles:['Geometric','Terrazzo','Animal Print','Typography'],
-    goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Blush Pink','Cream & Ivory','Deep Brown'],
-    avoidColors:['Black & Charcoal','Multi-color Earthy','Deep Teal','Dusty Lavender'],
+    goodColors:['Orange','Terracotta','Pink','Neutrals','White','Brown','Green'],
+    avoidColors:['Black','Colorful','Teal','Purple'],
     promptSuffix:'FLAT SURFACE PATTERN ONLY — NOT a pillow photo, NOT a mockup. Generate a seamless flat textile repeat pattern. Soft muted earthy watercolor, gentle botanical motifs, no neons, 300 DPI sRGB, no text no borders no product shape'
   },
   {
@@ -589,16 +637,22 @@ const STYLE_PROMPTS = {
 };
 
 const SWATCHES = [
-  {name:'Terracotta & Rust',hex:'#C06040'},
-  {name:'Sage & Moss',hex:'#6E9272'},
-  {name:'Warm Gold',hex:'#C4985A'},
-  {name:'Dusty Lavender',hex:'#9B7FB6'},
-  {name:'Blush Pink',hex:'#E8C4B8'},
-  {name:'Deep Brown',hex:'#3E2D1E'},
-  {name:'Deep Teal',hex:'#2B5F6E'},
-  {name:'Cream & Ivory',hex:'#F5E8C8'},
-  {name:'Black & Charcoal',hex:'#1A1612'},
-  {name:'Multi-color Earthy',hex:null,gradient:'linear-gradient(135deg,#C06040,#9B7FB6,#6E9272)'},
+  {name:'Black',hex:'#1A1612',prompt:'black and deep charcoal tones, high contrast, dramatic and bold'},
+  {name:'Blue',hex:'#3A6EA8',prompt:'dusty blue, steel blue and slate tones, calm and cool palette'},
+  {name:'Brown',hex:'#6B4226',prompt:'warm brown, caramel, espresso and chocolate tones, earthy richness'},
+  {name:'Colorful',hex:null,gradient:'linear-gradient(135deg,#E05C5C,#F0A030,#4A9E6B,#3A6EA8,#9B7FB6)',prompt:'vibrant multicolour palette, rich jewel tones, bold colour-blocked design'},
+  {name:'Gray',hex:'#7A7A7A',prompt:'warm gray, silver, slate and greige tones, sophisticated neutral palette'},
+  {name:'Green',hex:'#4A7C59',prompt:'sage green, forest green, moss and olive tones, natural botanical palette'},
+  {name:'Neutrals',hex:'#C8B89A',prompt:'warm neutrals, linen, sand, oatmeal and warm beige tones, quiet luxury palette'},
+  {name:'Orange',hex:'#D4621A',prompt:'terracotta, burnt orange, rust and amber tones, warm earthy palette'},
+  {name:'Pink',hex:'#D4789A',prompt:'dusty rose, blush pink, mauve and soft coral tones, romantic soft palette'},
+  {name:'Purple',hex:'#7B5EA7',prompt:'dusty lavender, plum, mauve and soft violet tones, elegant and rich'},
+  {name:'Red',hex:'#B03030',prompt:'deep red, cranberry, burgundy and wine tones, bold statement palette'},
+  {name:'Yellow',hex:'#C8A020',prompt:'warm gold, mustard yellow, honey and ochre tones, sunny earthy palette'},
+  {name:'White',hex:'#F5F0E8',prompt:'crisp white, ivory and off-white tones, clean minimal palette on light base'},
+  {name:'Terracotta',hex:'#C06040',prompt:'terracotta clay, burnt sienna, warm rust and earthy orange-red tones'},
+  {name:'Teal',hex:'#2B5F6E',prompt:'deep teal, dusty aqua, muted cyan and peacock blue tones, rich and moody'},
+  {name:'Cream & Gold',hex:'#C4985A',prompt:'warm cream, antique gold, honey and warm ivory tones, luxurious and refined'},
 ];
 
 // ══════════════════════════════
@@ -606,7 +660,7 @@ const SWATCHES = [
 // ══════════════════════════════
 let activePillow = PILLOWS[0];
 let activeStyle = 'Botanical';
-let activeColor = 'Terracotta & Rust';
+let activeColor = 'Terracotta';
 let numVariations = 1;
 let generatedImages = [];
 let selectedIdx = -1;
@@ -792,18 +846,19 @@ function buildPrompt() {
   if(!activePillow) return;
   const styleText = STYLE_PROMPTS[activeStyle]||activeStyle;
   const custom = document.getElementById('customPrompt').value;
-  const size = document.getElementById('sizeSelect').value||activePillow.sizes[0];
+  const colorData = SWATCHES.find(s=>s.name===activeColor);
+  const colorText = colorData ? colorData.prompt : activeColor;
   const customPart = custom ? `, ${custom}` : '';
-  const prompt = `Flat seamless textile surface pattern for print-on-demand — NOT a pillow photo, NOT a 3D mockup, NOT a product shot. Pure flat artwork only. Style: ${styleText}, colour palette of ${activeColor}, ${activePillow.promptSuffix}${customPart}. VuraPillows luxury home decor brand, trending 2026.`;
+  const prompt = `Flat seamless textile surface pattern for print-on-demand — NOT a pillow photo, NOT a 3D mockup, NOT a product shot. Pure flat artwork only. Style: ${styleText}, colour palette: ${colorText}, ${activePillow.promptSuffix}${customPart}. VuraPillows luxury home decor brand, trending 2026.`;
   document.getElementById('promptBox').innerHTML = `<em>${prompt}</em>`;
 }
 
 function surpriseMe() {
   const p = activePillow;
   const styles = p.goodStyles;
-  const colors = p.goodColors.filter(c=>!p.avoidColors.includes(c));
+  const allColors = SWATCHES.map(s=>s.name).filter(c=>!p.avoidColors.includes(c));
   activeStyle = styles[Math.floor(Math.random()*styles.length)];
-  activeColor = colors[Math.floor(Math.random()*colors.length)];
+  activeColor = allColors[Math.floor(Math.random()*allColors.length)];
   document.querySelectorAll('.tag').forEach(t=>{ t.classList.remove('active'); if(t.textContent.trim()===activeStyle) t.classList.add('active'); });
   document.querySelectorAll('.swatch').forEach(s=>{ s.classList.remove('active'); if(s.dataset.name===activeColor) s.classList.add('active'); });
   document.getElementById('colorLabel').textContent = activeColor;
@@ -830,6 +885,8 @@ async function generateDesigns() {
   hideErr();
   document.getElementById('progWrap').classList.add('on');
   document.getElementById('psheet').classList.remove('on');
+  document.getElementById('seoSection').classList.remove('on');
+  seoData={};
   generatedImages=[]; selectedIdx=-1;
   renderResults([]);
 
@@ -910,6 +967,11 @@ function selectImg(i){
   const p=activePillow;
   document.getElementById('varBody').innerHTML=p.sizes.map(s=>`<tr><td>${s}</td><td>$${p.base}</td><td>$${p.retail}</td><td style="color:var(--sage)">$${(p.retail-p.base-3.99).toFixed(2)}</td><td><span class="badge badge-g">MWW</span></td></tr>`).join('');
   document.getElementById('psheet').classList.add('on');
+  document.getElementById('seoSection').classList.add('on');
+  document.getElementById('seoOutputs').innerHTML='';
+  document.getElementById('seoCopyAll').style.display='none';
+  document.getElementById('seoGenBtn').textContent='✦ Generate All SEO Content';
+  seoData={};
   document.getElementById('psheet').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
@@ -1080,6 +1142,206 @@ function switchTab(name){
 function toggleKey(){const i=document.getElementById('apiKey');i.type=i.type==='password'?'text':'password';}
 function setNum(el,n){document.querySelectorAll('.num-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');numVariations=n;}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2800);}
-</script>
+
+// ══════════════════════════════
+// SEO CONTENT GENERATOR
+// ══════════════════════════════
+let seoData = {};
+
+async function generateSEOContent(){
+  const apiKey = document.getElementById('apiKey').value.trim();
+  if(!apiKey){toast('⚠ Enter your OpenRouter API key');return;}
+  if(!activePillow){toast('⚠ Select a pillow first');return;}
+
+  const btn = document.getElementById('seoGenBtn');
+  btn.disabled=true; btn.textContent='⏳ Writing...';
+  document.getElementById('seoCopyAll').style.display='none';
+  document.getElementById('seoOutputs').innerHTML='';
+  const prog = document.getElementById('seoProgWrap');
+  prog.classList.add('on');
+  setSeoProgress(15,'Crafting luxury copy...');
+
+  const size   = document.getElementById('sizeSelect').value || activePillow.sizes[0];
+  const colorData = SWATCHES.find(s=>s.name===activeColor);
+  const colorDesc = colorData ? colorData.prompt : activeColor;
+
+  const systemPrompt = `You are an expert luxury ecommerce copywriter and SEO specialist for VuraPillows, a premium US home decor brand.
+
+BRAND RULES — NEVER BREAK THESE:
+- NEVER mention "print-on-demand", "POD", "AI-generated", "digitally printed", or any manufacturing method
+- NEVER mention "Printify", "MWW On Demand", "dropship", or any fulfillment partner  
+- Write as if VuraPillows is an elite design house, like Anthropologie, CB2, or Serena & Lily
+- Use sensory, aspirational, editorial language — evoke feeling and lifestyle, not factory specs
+- The brand feels: curated, artistic, elevated, intentional
+- Target buyer: US homeowners, interior enthusiasts, gift buyers aged 28-55
+- Never use clichés like "perfect gift", "high quality", "great addition" — show don't tell
+- Use power words: luminous, artisan-crafted, hand-finished, considered, collector's-edition, heirloom
+
+SEO RULES:
+- Target US Google search intent (not UK spellings)
+- Primary keyword must appear in first 60 chars of product title
+- Meta description must be 140-160 characters exactly
+- Product title max 70 characters for Google Shopping
+- Use long-tail buyer-intent keywords that indicate purchase readiness
+- Keywords should include room-based, color-based, style-based, and occasion-based terms
+
+Respond ONLY in this exact JSON (no markdown, no backticks, no extra text):
+{"product_title":"max 70 chars, primary keyword first, brand name last, premium tone","google_shopping_title":"max 70 chars, color + style + product type + size, Google Merchant optimized","meta_title":"max 60 chars, primary keyword, VuraPillows at end","meta_description":"140-160 chars exactly, benefit-led, primary keyword, ends with subtle CTA, no quotes","product_description_short":"2-3 sentence aspirational hook, sensory language, opens with scene-setting word Imagine or Step into or Transform, no manufacturing mentions","product_description_full":"150-200 word full description, 3 paragraphs: P1 aspirational scene-setting, P2 design and material details in luxury language, P3 care and sizing written elegantly, ends with VuraPillows brand statement, natural keyword integration","primary_keywords":["3-4 high-volume US search terms"],"secondary_keywords":["5-6 mid-tail supporting keywords"],"long_tail_keywords":["4-5 buyer-intent phrases like best botanical pillow cover for living room"],"collection_page_blurb":"60-80 words for a collection category page, SEO-optimized, premium editorial tone, works as H2 intro paragraph","alt_text":"10-15 words describing the design naturally for image SEO, includes primary keyword","pinterest_description":"145-155 chars, aspirational lifestyle tone, 2-3 relevant hashtags at end"}`;
+
+  const userPrompt = `Generate complete SEO content for this VuraPillows product:
+Design Style: ${activeStyle}
+Color Palette: ${activeColor} (${colorDesc})
+Product: ${activePillow.name}
+Size: ${size}
+Print Method: ${activePillow.methodLabel}
+Room context: Living Room, Bedroom, Sofa styling`;
+
+  try{
+    setSeoProgress(40,'Generating all 12 outputs...');
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+apiKey,
+        'HTTP-Referer':'https://vurapillows.com',
+        'X-Title':'VuraPillows SEO Generator'
+      },
+      body:JSON.stringify({
+        model:'google/gemini-3.5-flash',
+        messages:[
+          {role:'system',content:systemPrompt},
+          {role:'user',content:userPrompt}
+        ],
+        max_tokens:2500
+      })
+    });
+
+    const data = await res.json();
+    setSeoProgress(85,'Formatting outputs...');
+
+    if(data.error) throw new Error(data.error.message||'API error');
+    const raw = data.choices?.[0]?.message?.content||'';
+    const clean = raw.replace(/```json|```/g,'').trim();
+    seoData = JSON.parse(clean);
+    setSeoProgress(100,'✓ All 12 outputs ready!');
+    setTimeout(()=>prog.classList.remove('on'),1500);
+    renderSEOOutputs(seoData);
+    document.getElementById('seoCopyAll').style.display='inline-flex';
+  }catch(e){
+    prog.classList.remove('on');
+    toast('⚠ SEO Error: '+e.message);
+    document.getElementById('seoOutputs').innerHTML=`<div style="background:#FEF0EE;border:1px solid #f5c2b6;border-radius:7px;padding:10px 13px;font-size:11px;color:#8b2a1a">⚠ ${e.message}</div>`;
+  }
+  btn.disabled=false; btn.textContent='✦ Generate All SEO Content';
+}
+
+function setSeoProgress(pct,msg){
+  document.getElementById('seoProgFill').style.width=pct+'%';
+  document.getElementById('seoProgMsg').textContent=msg;
+}
+
+function renderSEOOutputs(r){
+  const o = document.getElementById('seoOutputs');
+
+  // Score row
+  const titleLen = (r.product_title||'').length;
+  const metaLen  = (r.meta_description||'').length;
+  const kwCount  = (r.primary_keywords||[]).length+(r.secondary_keywords||[]).length+(r.long_tail_keywords||[]).length;
+  const wordCount= (r.product_description_full||'').split(' ').filter(Boolean).length;
+
+  o.innerHTML = `
+  <div class="seo-score-row">
+    <div class="seo-sc"><div class="seo-sc-num" style="color:${titleLen<=70?'var(--sage)':'var(--terra)'}">${titleLen}</div><div class="seo-sc-lbl">Title chars<br><span style="color:var(--muted)">max 70</span></div></div>
+    <div class="seo-sc"><div class="seo-sc-num" style="color:${metaLen>=140&&metaLen<=160?'var(--sage)':'var(--gold)'}">${metaLen}</div><div class="seo-sc-lbl">Meta chars<br><span style="color:var(--muted)">140–160</span></div></div>
+    <div class="seo-sc"><div class="seo-sc-num">${kwCount}</div><div class="seo-sc-lbl">Keywords<br><span style="color:var(--muted)">generated</span></div></div>
+    <div class="seo-sc"><div class="seo-sc-num">${wordCount}</div><div class="seo-sc-lbl">Desc words<br><span style="color:var(--muted)">target 150+</span></div></div>
+  </div>
+  ${seoField('🏷️ Product Title',r.product_title,'seo_product_title',50,70,true)}
+  ${seoField('🛒 Google Shopping Title',r.google_shopping_title,'seo_shopping_title',50,70,true)}
+  ${seoField('🔍 Meta Title',r.meta_title,'seo_meta_title',50,60,true)}
+  ${seoField('📝 Meta Description',r.meta_description,'seo_meta_desc',140,160,true)}
+  ${seoField('✨ Short Description',r.product_description_short,'seo_short_desc',80,300,false)}
+  ${seoField('📄 Full Product Description',r.product_description_full,'seo_full_desc',150,800,false)}
+  <div class="seo-card">
+    <div class="seo-card-hdr"><h4>🎯 Keywords</h4><button class="seo-copy" onclick="copyAllKeywords()">⎘ Copy All</button></div>
+    <div class="seo-kw-wrap">
+      <div style="width:100%;font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Primary</div>
+      ${(r.primary_keywords||[]).map(k=>`<span class="kw-chip kw-pri">${k}</span>`).join('')}
+      <div style="width:100%;font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:6px 0 4px">Secondary</div>
+      ${(r.secondary_keywords||[]).map(k=>`<span class="kw-chip kw-sec">${k}</span>`).join('')}
+      <div style="width:100%;font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:6px 0 4px">Long-tail Buyer Intent</div>
+      ${(r.long_tail_keywords||[]).map(k=>`<span class="kw-chip kw-lng">${k}</span>`).join('')}
+    </div>
+  </div>
+  ${seoField('📚 Collection Page Blurb',r.collection_page_blurb,'seo_collection',50,300,false)}
+  ${seoField('🖼️ Image Alt Text',r.alt_text,'seo_alt',10,150,true)}
+  ${seoField('📌 Pinterest Description',r.pinterest_description,'seo_pinterest',130,160,true)}
+  `;
+
+  // Auto-resize textareas
+  document.querySelectorAll('.seo-field[data-ta]').forEach(ta=>{
+    ta.style.height='auto';
+    ta.style.height=ta.scrollHeight+'px';
+    ta.addEventListener('input',()=>{
+      ta.style.height='auto';
+      ta.style.height=ta.scrollHeight+'px';
+      const badge = ta.closest('.seo-card')?.querySelector('.seo-char');
+      if(badge){
+        const len=ta.value.length;
+        const min=+badge.dataset.min; const max=+badge.dataset.max;
+        badge.textContent=len+' chars';
+        badge.className='seo-char '+(len>=min&&len<=max?'good':'over');
+      }
+    });
+  });
+}
+
+function seoField(label,content,id,min,max,single){
+  const len=(content||'').length;
+  const cls=len>=min&&len<=max?'good':'over';
+  const el = single
+    ? `<input type="text" class="seo-field" id="${id}" value="${seoEsc(content)}" style="padding:10px 13px"/>`
+    : `<textarea class="seo-field" data-ta="1" id="${id}" style="min-height:64px">${seoEsc(content)}</textarea>`;
+  return `<div class="seo-card">
+    <div class="seo-card-hdr">
+      <h4>${label}</h4>
+      <div class="seo-card-right">
+        <span class="seo-char ${cls}" data-min="${min}" data-max="${max}">${len} chars</span>
+        <button class="seo-copy" onclick="seocopyfld('${id}')">⎘ Copy</button>
+      </div>
+    </div>
+    <div>${el}</div>
+  </div>`;
+}
+
+function seoEsc(str){return (str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function seocopyfld(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  navigator.clipboard.writeText(el.value!==undefined?el.value:el.textContent);
+  toast('✓ Copied!');
+}
+
+function copyAllKeywords(){
+  const all=[...(seoData.primary_keywords||[]),...(seoData.secondary_keywords||[]),...(seoData.long_tail_keywords||[])].join('\n');
+  navigator.clipboard.writeText(all);
+  toast('✓ All keywords copied');
+}
+
+function seosCopyAll(){
+  if(!seoData||!Object.keys(seoData).length){toast('⚠ Generate SEO first');return;}
+  const r=seoData;
+  const fields=['seo_product_title','seo_shopping_title','seo_meta_title','seo_meta_desc','seo_short_desc','seo_full_desc','seo_collection','seo_alt','seo_pinterest'];
+  const labels=['PRODUCT TITLE','GOOGLE SHOPPING TITLE','META TITLE','META DESCRIPTION','SHORT DESCRIPTION','FULL DESCRIPTION','COLLECTION BLURB','IMAGE ALT TEXT','PINTEREST DESCRIPTION'];
+  let text='';
+  fields.forEach((fid,i)=>{
+    const el=document.getElementById(fid);
+    if(el) text+=`${labels[i]}:\n${el.value||el.textContent||''}\n\n`;
+  });
+  text+=`PRIMARY KEYWORDS:\n${(r.primary_keywords||[]).join(', ')}\n\nSECONDARY KEYWORDS:\n${(r.secondary_keywords||[]).join(', ')}\n\nLONG-TAIL KEYWORDS:\n${(r.long_tail_keywords||[]).join(', ')}`;
+  navigator.clipboard.writeText(text);
+  toast('✓ All 12 outputs copied!');
+}
 </body>
 </html>
