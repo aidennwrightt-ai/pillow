@@ -33,6 +33,24 @@ header{background:var(--ink);padding:14px 24px;display:flex;align-items:center;j
 /* API */
 .api-row{display:flex;gap:5px;}
 .api-row input{flex:1;}
+
+/* MODEL SELECTOR */
+.model-group{margin-bottom:8px;}
+.model-group-label{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px 3px;border-radius:5px;margin-bottom:4px;display:inline-block;}
+.mgl-free{background:#EDF5EE;color:#2e7d32;}
+.mgl-paid{background:#FFF3E0;color:#7a4500;}
+.mgl-best{background:#EEEDFE;color:#3C3489;}
+.model-option{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:white;margin-bottom:4px;cursor:pointer;transition:all .15s;}
+.model-option:hover{border-color:var(--terra);}
+.model-option.active{border-color:var(--terra);background:#FDF6F2;}
+.mo-name{font-size:11px;font-weight:500;color:var(--brown);}
+.mo-price{font-size:10px;color:var(--muted);}
+.mo-free{color:#2e7d32;font-weight:500;}
+.custom-model-wrap{margin-top:8px;}
+.custom-toggle{font-size:11px;color:var(--terra);cursor:pointer;text-decoration:underline;text-underline-offset:2px;display:block;margin-bottom:5px;}
+.custom-input-row{display:flex;gap:5px;display:none;}
+.custom-input-row.on{display:flex;}
+.active-model-badge{font-size:10px;background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:4px 8px;margin-top:6px;color:var(--brown);word-break:break-all;}
 input[type=password],input[type=text],select,textarea{width:100%;background:white;border:1px solid var(--border);border-radius:7px;padding:7px 9px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink);outline:none;transition:border-color .18s;}
 input:focus,select:focus,textarea:focus{border-color:var(--terra);}
 textarea{resize:vertical;min-height:64px;line-height:1.5;}
@@ -222,7 +240,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5;}
 
 <header>
   <div class="logo">Vura<em>Pillows</em> — Design Studio</div>
-  <div class="hbadge">FLUX · OpenRouter · v3.0</div>
+  <div class="hbadge" id="headerBadge">FLUX.1.1 Pro · OpenRouter · v3.0</div>
 </header>
 
 <div class="app">
@@ -240,6 +258,66 @@ textarea{resize:vertical;min-height:64px;line-height:1.5;}
     <div style="font-size:10px;color:var(--muted);margin-top:4px;">
       <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--terra);">openrouter.ai/keys</a>
     </div>
+  </div>
+
+  <!-- Image Generation Model -->
+  <div class="sblock">
+    <span class="slabel">Image Generation Model</span>
+
+    <div class="model-group">
+      <span class="model-group-label mgl-free">Free</span>
+      <div class="model-option" onclick="selectModel(this,'black-forest-labs/flux-1-schnell:free','FLUX.1 Schnell','Free')" data-slug="black-forest-labs/flux-1-schnell:free">
+        <span class="mo-name">FLUX.1 Schnell</span><span class="mo-price mo-free">Free</span>
+      </div>
+      <div class="model-option" onclick="selectModel(this,'black-forest-labs/flux-1-dev:free','FLUX.1 Dev','Free')" data-slug="black-forest-labs/flux-1-dev:free">
+        <span class="mo-name">FLUX.1 Dev</span><span class="mo-price mo-free">Free</span>
+      </div>
+    </div>
+
+    <div class="model-group">
+      <span class="model-group-label mgl-paid">Paid — Value</span>
+      <div class="model-option active" onclick="selectModel(this,'black-forest-labs/flux-1.1-pro','FLUX.1.1 Pro','~$0.04/img')" data-slug="black-forest-labs/flux-1.1-pro">
+        <span class="mo-name">FLUX.1.1 Pro ⭐</span><span class="mo-price">~$0.04/img</span>
+      </div>
+      <div class="model-option" onclick="selectModel(this,'black-forest-labs/flux.2-klein-4b','FLUX.2 Klein 4B','~$0.014/img')" data-slug="black-forest-labs/flux.2-klein-4b">
+        <span class="mo-name">FLUX.2 Klein 4B</span><span class="mo-price">~$0.014/img</span>
+      </div>
+      <div class="model-option" onclick="selectModel(this,'black-forest-labs/flux.2-pro','FLUX.2 Pro','~$0.03/img')" data-slug="black-forest-labs/flux.2-pro">
+        <span class="mo-name">FLUX.2 Pro</span><span class="mo-price">~$0.03/img</span>
+      </div>
+      <div class="model-option" onclick="selectModel(this,'google/gemini-2.5-flash-image','Gemini 2.5 Flash Image','~$0.039/img')" data-slug="google/gemini-2.5-flash-image">
+        <span class="mo-name">Gemini 2.5 Flash</span><span class="mo-price">~$0.039/img</span>
+      </div>
+      <div class="model-option" onclick="selectModel(this,'bytedance-seed/seedream-4.5','Seedream 4.5','~$0.04/img')" data-slug="bytedance-seed/seedream-4.5">
+        <span class="mo-name">Seedream 4.5</span><span class="mo-price">~$0.04/img</span>
+      </div>
+    </div>
+
+    <div class="model-group">
+      <span class="model-group-label mgl-best">Best Quality</span>
+      <div class="model-option" onclick="selectModel(this,'black-forest-labs/flux.2-max','FLUX.2 Max','~$0.07/img')" data-slug="black-forest-labs/flux.2-max">
+        <span class="mo-name">FLUX.2 Max</span><span class="mo-price">~$0.07/img</span>
+      </div>
+      <div class="model-option" onclick="selectModel(this,'google/gemini-3-pro-image-preview','Nano Banana Pro','~$0.12/img')" data-slug="google/gemini-3-pro-image-preview">
+        <span class="mo-name">Nano Banana Pro</span><span class="mo-price">~$0.12/img</span>
+      </div>
+      <div class="model-option" onclick="selectModel(this,'openai/gpt-5-image-mini','GPT-5 Image Mini','~$0.08/img')" data-slug="openai/gpt-5-image-mini">
+        <span class="mo-name">GPT-5 Image Mini</span><span class="mo-price">~$0.08/img</span>
+      </div>
+      <div class="model-option" onclick="selectModel(this,'openai/gpt-5.4-image-2','GPT-5.4 Image 2','~$0.15/img')" data-slug="openai/gpt-5.4-image-2">
+        <span class="mo-name">GPT-5.4 Image 2</span><span class="mo-price">~$0.15/img</span>
+      </div>
+    </div>
+
+    <!-- Custom model input -->
+    <div class="custom-model-wrap">
+      <span class="custom-toggle" onclick="toggleCustomModel()">+ Use a custom model slug</span>
+      <div class="custom-input-row" id="customModelRow">
+        <input type="text" id="customModelSlug" placeholder="e.g. stability-ai/sdxl" style="flex:1;font-size:11px;" oninput="applyCustomModel()"/>
+        <button class="show-btn" onclick="applyCustomModel()">Use</button>
+      </div>
+    </div>
+    <div class="active-model-badge">Active: <span id="activeModelLabel">FLUX.1.1 Pro</span></div>
   </div>
 
   <!-- Pillow Selector -->
@@ -351,6 +429,10 @@ textarea{resize:vertical;min-height:64px;line-height:1.5;}
     <div class="analyze-wrap">
       <div class="analyze-title">Analyze Your Design</div>
       <div class="analyze-sub">Upload any design image — the AI will extract its prompt and recommend the best pillow match for print quality.</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:#EEEDFE;border:1px solid #AFA9EC;border-radius:7px;padding:5px 10px;font-size:10px;color:#3C3489;margin-bottom:14px;">
+        <span>🤖</span>
+        <span>Auto-using <strong>Gemini 2.5 Flash</strong> — cheapest capable vision model on OpenRouter (~$0.0001/analysis)</span>
+      </div>
 
       <div class="drop-zone" id="dropZone" onclick="document.getElementById('analyzeInput').click()"
            ondragover="azDragOver(event)" ondragleave="azDragLeave(event)" ondrop="azDrop(event)">
@@ -532,6 +614,42 @@ let analyzeBase64 = null;
 let analyzeMime = null;
 let analyzeDataUrl = null;
 let history = JSON.parse(localStorage.getItem('vura_v3_history')||'[]');
+
+// Model state
+let activeModelSlug = 'black-forest-labs/flux-1.1-pro';
+let activeModelName = 'FLUX.1.1 Pro';
+
+// Cheapest vision model for analysis (auto-selected)
+const ANALYZE_MODEL = 'google/gemini-2.5-flash-preview';
+const ANALYZE_MODEL_NAME = 'Gemini 2.5 Flash (auto)';
+
+function selectModel(el, slug, name, price) {
+  document.querySelectorAll('.model-option').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+  activeModelSlug = slug;
+  activeModelName = name;
+  document.getElementById('activeModelLabel').textContent = name + ' · ' + price;
+  document.getElementById('headerBadge').textContent = name + ' · OpenRouter';
+  document.getElementById('customModelSlug').value = '';
+  toast('✦ Model: ' + name);
+}
+
+function toggleCustomModel() {
+  const row = document.getElementById('customModelRow');
+  row.classList.toggle('on');
+  if (row.classList.contains('on')) document.getElementById('customModelSlug').focus();
+}
+
+function applyCustomModel() {
+  const slug = document.getElementById('customModelSlug').value.trim();
+  if (!slug) { toast('⚠ Enter a valid model slug'); return; }
+  document.querySelectorAll('.model-option').forEach(m => m.classList.remove('active'));
+  activeModelSlug = slug;
+  activeModelName = slug;
+  document.getElementById('activeModelLabel').textContent = slug + ' · custom';
+  document.getElementById('headerBadge').textContent = slug + ' · OpenRouter';
+  toast('✦ Custom model set: ' + slug);
+}
 
 // ══════════════════════════════
 // INIT
@@ -726,7 +844,7 @@ async function generateDesigns() {
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey,'HTTP-Referer':'https://vurapillows.com','X-Title':'VuraPillows Design Studio'},
         body:JSON.stringify({
-          model:'black-forest-labs/flux-1.1-pro',
+          model: activeModelSlug,
           messages:[{role:'user',content:[{type:'text',text:varPrompt}]}],
           modalities:['image']
         })
@@ -833,7 +951,11 @@ async function analyzeDesign(){
   if(!analyzeBase64){toast('⚠ Upload a design image first');return;}
   const btn=document.getElementById('analyzeBtn');
   btn.disabled=true; btn.textContent='🔍 Analyzing...';
-  document.getElementById('analyzeResults').innerHTML='<p style="font-size:12px;color:var(--muted);padding:10px 0">Analyzing your design...</p>';
+  document.getElementById('analyzeResults').innerHTML=`
+    <div style="font-size:11px;color:var(--muted);padding:10px 0;display:flex;align-items:center;gap:8px;">
+      <div class="spin" style="width:16px;height:16px;border-width:1.5px;flex-shrink:0"></div>
+      Analyzing with <strong style="color:var(--purple)">${ANALYZE_MODEL_NAME}</strong> — cheapest capable vision model...
+    </div>`;
 
   const systemPrompt = `You are a professional textile print expert specializing in print-on-demand pillow design. Analyze the uploaded design image and respond ONLY in this exact JSON format with no other text:
 {
@@ -852,7 +974,7 @@ async function analyzeDesign(){
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey,'HTTP-Referer':'https://vurapillows.com','X-Title':'VuraPillows Design Studio'},
       body:JSON.stringify({
-        model:'anthropic/claude-opus-4-5',
+        model: ANALYZE_MODEL,
         messages:[{role:'user',content:[
           {type:'image_url',image_url:{url:`data:${analyzeMime};base64,${analyzeBase64}`}},
           {type:'text',text:'Analyze this pillow design image and respond in the JSON format specified.'}
