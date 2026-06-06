@@ -431,7 +431,7 @@ textarea{resize:vertical;min-height:64px;line-height:1.5;}
       <div class="analyze-sub">Upload any design image — the AI will extract its prompt and recommend the best pillow match for print quality.</div>
       <div style="display:inline-flex;align-items:center;gap:6px;background:#EEEDFE;border:1px solid #AFA9EC;border-radius:7px;padding:5px 10px;font-size:10px;color:#3C3489;margin-bottom:14px;">
         <span>🤖</span>
-        <span>Auto-using <strong>Gemini 2.5 Flash</strong> — cheapest capable vision model on OpenRouter (~$0.0001/analysis)</span>
+        <span>Auto-using <strong>Gemini 3.5 Flash</strong> — cheapest capable vision model on OpenRouter (~$0.001/analysis)</span>
       </div>
 
       <div class="drop-zone" id="dropZone" onclick="document.getElementById('analyzeInput').click()"
@@ -489,7 +489,7 @@ const PILLOWS = [
     avoidStyles:['Ikat / Aztec'],
     goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Dusty Lavender','Blush Pink','Deep Brown','Deep Teal','Cream & Ivory','Black & Charcoal','Multi-color Earthy'],
     avoidColors:[],
-    promptSuffix:'seamless repeat textile design for faux suede pillow, medium-toned watercolor washes, colour bleeds into colour, warm off-white background, no transparency fades, sRGB, 300 DPI, no text no borders'
+    promptSuffix:'FLAT SURFACE PATTERN ONLY — NOT a pillow photo, NOT a mockup, NOT a 3D object. Generate a seamless flat textile repeat pattern as if printed on paper. Watercolor botanical style, medium-toned washes, colour-to-colour bleeds, warm off-white background, no fades to transparent, sRGB 300 DPI, no text no borders no product shape'
   },
   {
     id:'faux_suede_cover', name:'Faux Suede Pillowcase', icon:'🟫',
@@ -503,7 +503,7 @@ const PILLOWS = [
     avoidStyles:['Ikat / Aztec'],
     goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Dusty Lavender','Blush Pink','Deep Brown','Deep Teal','Cream & Ivory','Black & Charcoal','Multi-color Earthy'],
     avoidColors:[],
-    promptSuffix:'seamless repeat textile design for faux suede pillowcase, painterly watercolor style, colour-to-colour blends only, warm cream base, 300 DPI sRGB, no text no borders'
+    promptSuffix:'FLAT SURFACE PATTERN ONLY — NOT a pillow photo, NOT a mockup. Generate a seamless flat textile repeat pattern. Painterly watercolor style, colour-to-colour blends, warm cream base, 300 DPI sRGB, no text no borders no product shape'
   },
   {
     id:'lumbar', name:'Lumbar Pillow', icon:'📐',
@@ -517,7 +517,7 @@ const PILLOWS = [
     avoidStyles:[],
     goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Dusty Lavender','Blush Pink','Deep Brown','Deep Teal','Cream & Ivory','Black & Charcoal','Multi-color Earthy'],
     avoidColors:[],
-    promptSuffix:'rectangular lumbar pillow textile design, horizontal composition, vibrant watercolor botanical pattern, seamless, 300 DPI sRGB, no text no borders'
+    promptSuffix:'FLAT SURFACE PATTERN ONLY — NOT a pillow photo, NOT a mockup. Generate a seamless flat rectangular textile repeat pattern, horizontal composition, vibrant watercolor botanical, 300 DPI sRGB, no text no borders no product shape'
   },
   {
     id:'woven', name:'Woven Pillow', icon:'🧶',
@@ -531,7 +531,7 @@ const PILLOWS = [
     avoidStyles:['Watercolor','Maximalist Floral','Abstract Art','Boho Mandala','Tropical Leaves','Celestial','Patchwork','Animal Print','Typography'],
     goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Deep Brown','Deep Teal','Black & Charcoal'],
     avoidColors:['Blush Pink','Dusty Lavender','Multi-color Earthy','Cream & Ivory'],
-    promptSuffix:'bold geometric jacquard tapestry pattern, maximum 6 solid flat colours, hard clean edges no gradients no blends, high contrast, suitable for loom weaving, no text no borders'
+    promptSuffix:'FLAT SURFACE PATTERN ONLY — NOT a pillow photo, NOT a mockup. Generate a flat square jacquard-style textile repeat pattern, bold geometric, maximum 6 solid flat colours, hard edges no gradients, high contrast, no text no borders no product shape'
   },
   {
     id:'microfiber', name:'Microfiber Pillowcase', icon:'🛏️',
@@ -545,7 +545,7 @@ const PILLOWS = [
     avoidStyles:['Geometric','Terrazzo','Animal Print','Typography'],
     goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Blush Pink','Cream & Ivory','Deep Brown'],
     avoidColors:['Black & Charcoal','Multi-color Earthy','Deep Teal','Dusty Lavender'],
-    promptSuffix:'soft bedroom textile pattern for microfiber pillowcase, muted earthy watercolor tones, gentle botanical motifs, medium saturation no neons, seamless, 300 DPI sRGB, no text'
+    promptSuffix:'FLAT SURFACE PATTERN ONLY — NOT a pillow photo, NOT a mockup. Generate a seamless flat textile repeat pattern. Soft muted earthy watercolor, gentle botanical motifs, no neons, 300 DPI sRGB, no text no borders no product shape'
   },
   {
     id:'poly_canvas', name:'Poly Canvas Pillowcase', icon:'🎨',
@@ -559,7 +559,7 @@ const PILLOWS = [
     avoidStyles:['Geometric','Ikat / Aztec','Typography'],
     goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Dusty Lavender','Blush Pink','Deep Brown','Deep Teal','Cream & Ivory','Black & Charcoal','Multi-color Earthy'],
     avoidColors:[],
-    promptSuffix:'artist canvas style textile design for poly canvas pillowcase, expressive painterly watercolor, canvas grain texture aesthetic, seamless repeat, 300 DPI sRGB, no text no borders'
+    promptSuffix:'FLAT SURFACE PATTERN ONLY — NOT a pillow photo, NOT a mockup. Generate a seamless flat textile repeat pattern with canvas texture feel. Expressive painterly watercolor art, 300 DPI sRGB, no text no borders no product shape'
   },
 ];
 
@@ -620,8 +620,8 @@ let activeModelSlug = 'black-forest-labs/flux-1.1-pro';
 let activeModelName = 'FLUX.1.1 Pro';
 
 // Cheapest vision model for analysis (auto-selected)
-const ANALYZE_MODEL = 'google/gemini-2.5-flash-preview';
-const ANALYZE_MODEL_NAME = 'Gemini 2.5 Flash (auto)';
+const ANALYZE_MODEL = 'google/gemini-3.5-flash';
+const ANALYZE_MODEL_NAME = 'Gemini 3.5 Flash (auto)';
 
 function selectModel(el, slug, name, price) {
   document.querySelectorAll('.model-option').forEach(m => m.classList.remove('active'));
@@ -794,7 +794,7 @@ function buildPrompt() {
   const custom = document.getElementById('customPrompt').value;
   const size = document.getElementById('sizeSelect').value||activePillow.sizes[0];
   const customPart = custom ? `, ${custom}` : '';
-  const prompt = `Seamless repeat textile pattern for a ${activePillow.name} (${size}), ${activePillow.name} pillow: ${styleText}, colour palette of ${activeColor}, ${activePillow.promptSuffix}${customPart}. Luxury home decor brand VuraPillows, trending 2026, print-on-demand production ready.`;
+  const prompt = `Flat seamless textile surface pattern for print-on-demand — NOT a pillow photo, NOT a 3D mockup, NOT a product shot. Pure flat artwork only. Style: ${styleText}, colour palette of ${activeColor}, ${activePillow.promptSuffix}${customPart}. VuraPillows luxury home decor brand, trending 2026.`;
   document.getElementById('promptBox').innerHTML = `<em>${prompt}</em>`;
 }
 
