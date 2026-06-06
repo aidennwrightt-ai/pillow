@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VuraPillows — AI Design Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F8F4EF; --white:#FDFBF8; --ink:#18140F; --brown:#3E2D1E;
+  --terra:#C06040; --sage:#6E9272; --gold:#C4985A; --muted:#9A8D82;
+  --border:#EAE2D8; --purple:#7B5EA7;
+  --shadow:rgba(24,20,15,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);font-size:13px;min-height:100vh;}
+
+/* HEADER */
+header{background:var(--ink);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--cream);letter-spacing:.14em;text-transform:uppercase;}
+.logo em{color:var(--gold);font-style:italic;}
+.hbadge{font-size:10px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);padding:3px 10px;border-radius:20px;letter-spacing:.06em;}
+
+/* LAYOUT */
+.app{display:grid;grid-template-columns:290px 1fr;min-height:calc(100vh - 49px);}
+
+/* SIDEBAR */
+.sidebar{background:var(--white);border-right:1px solid var(--border);overflow-y:auto;max-height:calc(100vh - 49px);display:flex;flex-direction:column;}
+.sblock{padding:14px 18px;border-bottom:1px solid var(--border);}
+.sblock:last-child{border-bottom:none;}
+.slabel{font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:block;}
+
+/* API */
+.api-row{display:flex;gap:5px;}
+.api-row input{flex:1;}
+input[type=password],input[type=text],select,textarea{width:100%;background:white;border:1px solid var(--border);border-radius:7px;padding:7px 9px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink);outline:none;transition:border-color .18s;}
+input:focus,select:focus,textarea:focus{border-color:var(--terra);}
+textarea{resize:vertical;min-height:64px;line-height:1.5;}
+.show-btn{background:transparent;border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:11px;cursor:pointer;color:var(--muted);white-space:nowrap;transition:all .15s;}
+.show-btn:hover{border-color:var(--terra);color:var(--terra);}
+
+/* PILLOW CARDS */
+.pillow-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.pillow-card{border:1.5px solid var(--border);border-radius:10px;padding:10px 10px 8px;cursor:pointer;transition:all .18s;background:white;text-align:center;}
+.pillow-card:hover{border-color:var(--terra);}
+.pillow-card.active{border-color:var(--terra);background:#FDF6F2;}
+.pillow-card.disabled-card{opacity:.35;cursor:not-allowed;pointer-events:none;}
+.pillow-icon{font-size:22px;margin-bottom:4px;}
+.pillow-name{font-size:10px;font-weight:500;color:var(--brown);line-height:1.3;}
+.pillow-method{font-size:9px;color:var(--muted);margin-top:2px;}
+.method-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:3px;vertical-align:middle;}
+.dot-sub{background:#C06040;}
+.dot-dtf{background:#6E9272;}
+.dot-jac{background:#7B5EA7;}
+
+/* PRINT INFO BOX */
+.print-info{background:var(--cream);border-radius:8px;padding:10px 12px;font-size:11px;line-height:1.6;margin-top:2px;}
+.print-info strong{color:var(--brown);}
+.print-tip{font-size:10px;margin-top:5px;padding:5px 8px;border-radius:6px;}
+.tip-good{background:#EDF5EE;color:#3a6b3e;}
+.tip-warn{background:#FFF3E0;color:#7a4500;}
+.tip-bad{background:#FDECEA;color:#8b2a1a;}
+
+/* STYLE TAGS */
+.tag-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{background:white;border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;cursor:pointer;transition:all .15s;color:var(--brown);user-select:none;}
+.tag:hover{border-color:var(--terra);color:var(--terra);}
+.tag.active{background:var(--terra);border-color:var(--terra);color:white;}
+.tag.disabled{opacity:.3;pointer-events:none;}
+.tag.not-ideal{border-color:#f5c26b;color:#8a5a00;background:#fffaf0;}
+
+/* SWATCHES */
+.swatch-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
+.swatch{height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.swatch:hover{transform:scale(1.1);}
+.swatch.active{border-color:var(--terra);box-shadow:0 0 0 2px white,0 0 0 4px var(--terra);}
+.swatch.disabled{opacity:.25;pointer-events:none;}
+.color-label{font-size:10px;color:var(--muted);margin-top:5px;}
+.color-label span{color:var(--brown);font-weight:500;}
+
+/* GENERATE BTN */
+.gen-btn{width:100%;background:var(--terra);color:white;border:none;border-radius:8px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:.04em;transition:background .18s;}
+.gen-btn:hover{background:#a84e30;}
+.gen-btn:disabled{background:var(--muted);cursor:not-allowed;}
+
+/* MAIN */
+.main{overflow-y:auto;max-height:calc(100vh - 49px);display:flex;flex-direction:column;}
+
+/* TABS */
+.tabs{display:flex;background:var(--white);border-bottom:1px solid var(--border);padding:0 22px;flex-shrink:0;}
+.tab{padding:11px 14px;font-size:12px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);transition:all .18s;white-space:nowrap;}
+.tab:hover{color:var(--brown);}
+.tab.active{border-bottom-color:var(--terra);color:var(--terra);}
+.tab-panel{display:none;flex:1;flex-direction:column;}
+.tab-panel.active{display:flex;}
+
+/* PROMPT SECTION */
+.prompt-section{padding:18px 22px;border-bottom:1px solid var(--border);background:var(--white);flex-shrink:0;}
+.prompt-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;margin-bottom:2px;}
+.prompt-sub{color:var(--muted);font-size:11px;margin-bottom:12px;}
+.prompt-box{background:var(--cream);border:1px solid var(--border);border-radius:9px;padding:10px 13px;font-size:12px;line-height:1.6;color:var(--brown);min-height:52px;margin-bottom:10px;}
+.prompt-box em{color:var(--terra);font-style:normal;font-weight:500;}
+.prompt-actions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.pa-btn{background:white;border:1px solid var(--border);border-radius:7px;padding:5px 11px;font-size:11px;cursor:pointer;color:var(--brown);transition:all .15s;}
+.pa-btn:hover{border-color:var(--terra);color:var(--terra);}
+.var-row{display:flex;align-items:center;gap:10px;}
+.var-row label{font-size:11px;color:var(--brown);white-space:nowrap;}
+.num-btns{display:flex;gap:4px;}
+.num-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--brown);}
+.num-btn.active{background:var(--terra);border-color:var(--terra);color:white;}
+
+/* PROGRESS */
+.prog-wrap{display:none;margin-top:10px;}
+.prog-wrap.on{display:block;}
+.prog-track{background:var(--border);border-radius:10px;height:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--terra),var(--gold));border-radius:10px;width:0;transition:width .4s;}
+.prog-msg{font-size:11px;color:var(--muted);text-align:center;margin-top:5px;}
+.err-box{background:#FEF0EE;border:1px solid #f5c2b6;border-radius:7px;padding:9px 12px;font-size:11px;color:#8b2a1a;margin-top:8px;display:none;line-height:1.5;}
+.err-box.on{display:block;}
+
+/* RESULTS */
+.results-area{padding:18px 22px;flex:1;}
+.results-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.results-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;}
+.results-count{font-size:11px;color:var(--muted);}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;}
+
+/* IMAGE CARD */
+.img-card{background:white;border-radius:11px;overflow:hidden;border:1px solid var(--border);transition:all .2s;cursor:pointer;}
+.img-card:hover{box-shadow:0 6px 20px var(--shadow);transform:translateY(-2px);}
+.img-card.sel{border-color:var(--terra);box-shadow:0 0 0 2px var(--terra);}
+.img-thumb{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.img-loading{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#f0ebe4,#e8dfd5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:11px;}
+.spin{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--terra);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.img-body{padding:8px 10px;}
+.img-title{font-size:11px;font-weight:500;color:var(--brown);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.img-meta{font-size:10px;color:var(--muted);margin-bottom:6px;}
+.img-actions{display:flex;gap:4px;}
+.ia-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:10px;cursor:pointer;color:var(--brown);transition:all .15s;}
+.ia-btn:hover{border-color:var(--terra);color:var(--terra);}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:50px 20px;color:var(--muted);grid-column:1/-1;}
+.empty-icon{font-size:40px;margin-bottom:10px;opacity:.4;}
+.empty h3{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--brown);margin-bottom:4px;}
+.empty p{font-size:12px;}
+
+/* PRODUCT SHEET */
+.psheet{padding:18px 22px;background:var(--white);border-top:1px solid var(--border);display:none;flex-shrink:0;}
+.psheet.on{display:block;}
+.psheet-title{font-family:'Cormorant Garamond',serif;font-size:16px;margin-bottom:12px;}
+.psheet-grid{display:grid;grid-template-columns:160px 1fr;gap:16px;}
+.psheet-img{border-radius:9px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1;background:var(--cream);}
+.psheet-img img{width:100%;height:100%;object-fit:cover;}
+.psheet-info h4{font-family:'Cormorant Garamond',serif;font-size:15px;margin-bottom:5px;}
+.psheet-desc{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:10px;}
+.var-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px;}
+.var-tbl th{text-align:left;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:4px 6px;border-bottom:1px solid var(--border);}
+.var-tbl td{padding:4px 6px;border-bottom:1px solid var(--border);}
+.badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:500;text-transform:uppercase;}
+.badge-g{background:#e8f5e9;color:#2e7d32;}
+.badge-p{background:#EDE7F6;color:#512DA8;}
+.psheet-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.ps-btn{border:none;border-radius:7px;padding:7px 13px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;}
+.ps-btn.dl{background:var(--terra);color:white;}
+.ps-btn.dl:hover{background:#a84e30;}
+.ps-btn.seo{background:var(--gold);color:var(--ink);}
+.ps-btn.desc{background:var(--sage);color:white;}
+
+/* ANALYZE TAB */
+.analyze-wrap{padding:20px 22px;flex:1;overflow-y:auto;}
+.analyze-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;margin-bottom:4px;}
+.analyze-sub{color:var(--muted);font-size:12px;margin-bottom:18px;}
+.drop-zone{border:2px dashed var(--border);border-radius:12px;padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;background:white;margin-bottom:16px;}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--purple);background:#F8F4FF;}
+.drop-zone.has-img{border-color:var(--purple);border-style:solid;}
+.dz-icon{font-size:36px;margin-bottom:8px;}
+.dz-text{font-size:12px;color:var(--muted);line-height:1.6;}
+.dz-text strong{color:var(--purple);}
+#analyzeInput{display:none;}
+.dz-preview{margin-top:12px;}
+.dz-preview img{max-width:200px;max-height:200px;border-radius:8px;border:1px solid var(--border);object-fit:cover;}
+.analyze-btn{width:100%;background:var(--purple);color:white;border:none;border-radius:8px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:16px;transition:background .18s;}
+.analyze-btn:hover{background:#6a4d94;}
+.analyze-btn:disabled{background:var(--muted);cursor:not-allowed;}
+.result-card{background:white;border:1px solid var(--border);border-radius:11px;padding:15px 17px;margin-bottom:12px;}
+.result-card h4{font-size:13px;font-weight:500;color:var(--brown);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.result-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+.prompt-out{background:var(--cream);border-radius:7px;padding:10px 12px;font-size:11px;color:var(--brown);line-height:1.6;margin-bottom:8px;}
+.copy-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--brown);transition:all .15s;}
+.copy-btn:hover{border-color:var(--terra);color:var(--terra);}
+.pillow-rec{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.rec-pill{border-radius:8px;padding:10px 12px;font-size:11px;}
+.rec-pill.best{background:#EDF5EE;border:1px solid #9fd9a5;}
+.rec-pill.best .rp-label{color:#2e7d32;font-weight:500;margin-bottom:2px;}
+.rec-pill.best .rp-note{color:#3a6b3e;}
+.rec-pill.avoid{background:#FDECEA;border:1px solid #f5b8b2;}
+.rec-pill.avoid .rp-label{color:#8b2a1a;font-weight:500;margin-bottom:2px;}
+.rec-pill.avoid .rp-note{color:#7a2018;}
+.rp-label{font-size:10px;}
+.rp-note{font-size:10px;}
+.use-prompt-btn{width:100%;background:var(--terra);color:white;border:none;border-radius:7px;padding:9px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;margin-top:10px;transition:background .18s;}
+.use-prompt-btn:hover{background:#a84e30;}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;right:18px;background:var(--ink);color:var(--cream);padding:9px 15px;border-radius:9px;font-size:12px;z-index:999;opacity:0;transform:translateY(6px);transition:all .25s;pointer-events:none;max-width:260px;}
+.toast.on{opacity:1;transform:translateY(0);}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+
+@media(max-width:820px){
+  .app{grid-template-columns:1fr;}
+  .sidebar{max-height:none;border-right:none;border-bottom:1px solid var(--border);}
+  .main{max-height:none;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Vura<em>Pillows</em> — Design Studio</div>
+  <div class="hbadge">FLUX · OpenRouter · v3.0</div>
+</header>
+
+<div class="app">
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+
+  <!-- API Key -->
+  <div class="sblock">
+    <span class="slabel">OpenRouter API Key</span>
+    <div class="api-row">
+      <input type="password" id="apiKey" placeholder="sk-or-v1-..." />
+      <button class="show-btn" onclick="toggleKey()">Show</button>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-top:4px;">
+      <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--terra);">openrouter.ai/keys</a>
+    </div>
+  </div>
+
+  <!-- Pillow Selector -->
+  <div class="sblock">
+    <span class="slabel">Select Your Pillow</span>
+    <div class="pillow-grid" id="pillowGrid"></div>
+    <div class="print-info" id="printInfo" style="display:none;"></div>
+  </div>
+
+  <!-- Size -->
+  <div class="sblock">
+    <span class="slabel">Size</span>
+    <select id="sizeSelect"></select>
+  </div>
+
+  <!-- Design Style -->
+  <div class="sblock">
+    <span class="slabel">Design Style <span style="color:var(--terra);font-size:9px;" id="styleNote"></span></span>
+    <div class="tag-grid" id="styleGrid"></div>
+  </div>
+
+  <!-- Color Palette -->
+  <div class="sblock">
+    <span class="slabel">Color Palette <span style="color:var(--terra);font-size:9px;" id="colorNote"></span></span>
+    <div class="swatch-grid" id="swatchGrid"></div>
+    <div class="color-label">Selected: <span id="colorLabel">Terracotta & Rust</span></div>
+  </div>
+
+  <!-- Generate -->
+  <div class="sblock">
+    <button class="gen-btn" id="genBtn" onclick="generateDesigns()">✦ Generate Pillow Designs</button>
+  </div>
+
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('generate')">✦ Generate</div>
+    <div class="tab" onclick="switchTab('analyze')">🔍 Analyze Design</div>
+    <div class="tab" onclick="switchTab('history')">📁 History</div>
+  </div>
+
+  <!-- GENERATE TAB -->
+  <div class="tab-panel active" id="tab-generate">
+    <div class="prompt-section">
+      <div class="prompt-title">AI Prompt Builder</div>
+      <div class="prompt-sub">Built from your selections. Style and colors are filtered for your chosen pillow's print method.</div>
+      <div class="prompt-box" id="promptBox">Select a pillow to start building your prompt...</div>
+      <div style="margin-bottom:10px;">
+        <input type="text" id="customPrompt" placeholder='Optional extra detail, e.g. "with gold botanical accents"' oninput="buildPrompt()" />
+      </div>
+      <div class="prompt-actions">
+        <button class="pa-btn" onclick="buildPrompt()">↺ Rebuild</button>
+        <button class="pa-btn" onclick="copyPrompt()">⎘ Copy Prompt</button>
+        <button class="pa-btn" onclick="surpriseMe()">✦ Surprise Me</button>
+      </div>
+      <div class="var-row">
+        <label>Variations:</label>
+        <div class="num-btns">
+          <div class="num-btn active" onclick="setNum(this,1)">1</div>
+          <div class="num-btn" onclick="setNum(this,2)">2</div>
+          <div class="num-btn" onclick="setNum(this,3)">3</div>
+          <div class="num-btn" onclick="setNum(this,4)">4</div>
+        </div>
+      </div>
+      <div class="err-box" id="errBox"></div>
+      <div class="prog-wrap" id="progWrap">
+        <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+        <div class="prog-msg" id="progMsg"></div>
+      </div>
+    </div>
+
+    <div class="results-area">
+      <div class="results-hdr">
+        <div class="results-title">Generated Designs</div>
+        <div class="results-count" id="resultsCount">0 designs</div>
+      </div>
+      <div class="results-grid" id="resultsGrid">
+        <div class="empty">
+          <div class="empty-icon">🎨</div>
+          <h3>Designs appear here</h3>
+          <p>Pick a pillow, choose style & color, then generate.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="psheet" id="psheet">
+      <div class="psheet-title">✦ Product Sheet — Printify Ready</div>
+      <div class="psheet-grid">
+        <div class="psheet-img"><img id="psheetImg" src="" alt=""/></div>
+        <div class="psheet-info">
+          <h4 id="psheetTitle"></h4>
+          <p class="psheet-desc" id="psheetDesc"></p>
+          <table class="var-tbl"><thead><tr><th>Size</th><th>Base Cost</th><th>Retail</th><th>Profit</th><th>Vendor</th></tr></thead>
+          <tbody id="varBody"></tbody></table>
+          <div class="psheet-btns">
+            <button class="ps-btn dl" onclick="dlSelected()">⬇ Download</button>
+            <button class="ps-btn seo" onclick="copySEO()">📋 SEO Title</button>
+            <button class="ps-btn desc" onclick="copyDesc()">📝 Description</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYZE TAB -->
+  <div class="tab-panel" id="tab-analyze">
+    <div class="analyze-wrap">
+      <div class="analyze-title">Analyze Your Design</div>
+      <div class="analyze-sub">Upload any design image — the AI will extract its prompt and recommend the best pillow match for print quality.</div>
+
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('analyzeInput').click()"
+           ondragover="azDragOver(event)" ondragleave="azDragLeave(event)" ondrop="azDrop(event)">
+        <input type="file" id="analyzeInput" accept="image/*" onchange="azFileChange(event)"/>
+        <div id="dzEmpty">
+          <div class="dz-icon">🖼️</div>
+          <p class="dz-text"><strong>Drop your design image here</strong><br>or click to browse<br><span style="font-size:10px">PNG, JPG, WEBP · Max 8MB</span></p>
+        </div>
+        <div class="dz-preview" id="dzPreview" style="display:none;">
+          <img id="dzPreviewImg" src="" alt="preview"/>
+          <p style="font-size:11px;color:var(--muted);margin-top:6px;" id="dzFileName"></p>
+        </div>
+      </div>
+
+      <button class="analyze-btn" id="analyzeBtn" onclick="analyzeDesign()" disabled>🔍 Analyze Design</button>
+
+      <div id="analyzeResults"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div class="tab-panel" id="tab-history">
+    <div class="analyze-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div class="analyze-title">Design History</div>
+        <button class="pa-btn" onclick="clearHistory()">Clear All</button>
+      </div>
+      <div id="historyList">
+        <div class="empty"><div class="empty-icon">📁</div><h3>No history yet</h3><p>Designs save here automatically.</p></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════
+// DATA
+// ══════════════════════════════
+
+const PILLOWS = [
+  {
+    id:'faux_suede_pillow', name:'Faux Suede Pillow', icon:'🛋️',
+    method:'dye_sub', methodLabel:'Dye Sublimation',
+    sizes:['14"×14"','16"×16"','18"×18"','20"×20"'],
+    base:17.17, retail:42,
+    printInfo:'100% polyester faux suede. Ink bonds at <strong>molecular level</strong> — permanent, vibrant, full-coverage. White polyester base gives clean colour reproduction.',
+    tip:'Best overall for watercolor & painterly designs. Colors pop on the suede texture.',
+    tipType:'good',
+    goodStyles:['Botanical','Maximalist Floral','Abstract Art','Watercolor','Japandi','Boho Mandala','Tropical Leaves','Celestial','Line Art','Terrazzo','Patchwork','Animal Print'],
+    avoidStyles:['Ikat / Aztec'],
+    goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Dusty Lavender','Blush Pink','Deep Brown','Deep Teal','Cream & Ivory','Black & Charcoal','Multi-color Earthy'],
+    avoidColors:[],
+    promptSuffix:'seamless repeat textile design for faux suede pillow, medium-toned watercolor washes, colour bleeds into colour, warm off-white background, no transparency fades, sRGB, 300 DPI, no text no borders'
+  },
+  {
+    id:'faux_suede_cover', name:'Faux Suede Pillowcase', icon:'🟫',
+    method:'dye_sub', methodLabel:'Dye Sublimation',
+    sizes:['14"×14"','16"×16"','18"×18"','20"×20"'],
+    base:13.19, retail:34,
+    printInfo:'Same 100% polyester faux suede fabric as the pillow. Double-sided print. All dye sublimation rules apply identically.',
+    tip:'Same design rules as Faux Suede Pillow — use identical prompts.',
+    tipType:'good',
+    goodStyles:['Botanical','Maximalist Floral','Abstract Art','Watercolor','Japandi','Boho Mandala','Tropical Leaves','Celestial','Line Art','Terrazzo','Patchwork','Animal Print'],
+    avoidStyles:['Ikat / Aztec'],
+    goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Dusty Lavender','Blush Pink','Deep Brown','Deep Teal','Cream & Ivory','Black & Charcoal','Multi-color Earthy'],
+    avoidColors:[],
+    promptSuffix:'seamless repeat textile design for faux suede pillowcase, painterly watercolor style, colour-to-colour blends only, warm cream base, 300 DPI sRGB, no text no borders'
+  },
+  {
+    id:'lumbar', name:'Lumbar Pillow', icon:'📐',
+    method:'dye_sub', methodLabel:'Dye Sublimation',
+    sizes:['12"×20"','14"×20"'],
+    base:20.06, retail:48,
+    printInfo:'100% spun polyester. Smoothest surface of all products = sharpest detail and highest colour vibrancy. Best colour accuracy across the range.',
+    tip:'Highest vibrancy — all colours print beautifully here. Great for bold florals and detailed watercolor.',
+    tipType:'good',
+    goodStyles:['Botanical','Maximalist Floral','Geometric','Abstract Art','Watercolor','Boho Mandala','Tropical Leaves','Celestial','Line Art','Terrazzo','Ikat / Aztec','Animal Print'],
+    avoidStyles:[],
+    goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Dusty Lavender','Blush Pink','Deep Brown','Deep Teal','Cream & Ivory','Black & Charcoal','Multi-color Earthy'],
+    avoidColors:[],
+    promptSuffix:'rectangular lumbar pillow textile design, horizontal composition, vibrant watercolor botanical pattern, seamless, 300 DPI sRGB, no text no borders'
+  },
+  {
+    id:'woven', name:'Woven Pillow', icon:'🧶',
+    method:'jacquard', methodLabel:'Jacquard Weaving',
+    sizes:['14"×14"','16"×16"','18"×18"'],
+    base:26.78, retail:68,
+    printInfo:'Cotton + polyester yarn blend. Design is <strong>physically woven</strong> — NOT printed. Threads blend like pixels. Max 6–8 solid colours, hard edges only.',
+    tip:'Watercolor and soft blends DO NOT work here. Use bold geometric or high-contrast patterns only.',
+    tipType:'warn',
+    goodStyles:['Geometric','Ikat / Aztec','Japandi','Vintage Damask','Line Art'],
+    avoidStyles:['Watercolor','Maximalist Floral','Abstract Art','Boho Mandala','Tropical Leaves','Celestial','Patchwork','Animal Print','Typography'],
+    goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Deep Brown','Deep Teal','Black & Charcoal'],
+    avoidColors:['Blush Pink','Dusty Lavender','Multi-color Earthy','Cream & Ivory'],
+    promptSuffix:'bold geometric jacquard tapestry pattern, maximum 6 solid flat colours, hard clean edges no gradients no blends, high contrast, suitable for loom weaving, no text no borders'
+  },
+  {
+    id:'microfiber', name:'Microfiber Pillowcase', icon:'🛏️',
+    method:'dtf', methodLabel:'Direct-to-Fabric',
+    sizes:['Standard','King'],
+    base:14.70, retail:36,
+    printInfo:'Fine microfiber weave. Direct-to-Fabric printing deposits ink directly into fibers. Slightly softer colour output vs dye-sub. Good for bedroom collections.',
+    tip:'Avoid neon or ultra-vivid tones — slight colour muting. Muted earthy watercolor works well.',
+    tipType:'warn',
+    goodStyles:['Botanical','Watercolor','Japandi','Line Art','Patchwork','Celestial'],
+    avoidStyles:['Geometric','Terrazzo','Animal Print','Typography'],
+    goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Blush Pink','Cream & Ivory','Deep Brown'],
+    avoidColors:['Black & Charcoal','Multi-color Earthy','Deep Teal','Dusty Lavender'],
+    promptSuffix:'soft bedroom textile pattern for microfiber pillowcase, muted earthy watercolor tones, gentle botanical motifs, medium saturation no neons, seamless, 300 DPI sRGB, no text'
+  },
+  {
+    id:'poly_canvas', name:'Poly Canvas Pillowcase', icon:'🎨',
+    method:'dye_sub', methodLabel:'Dye Sublimation',
+    sizes:['14"×14"','16"×16"','18"×18"','20"×20"','24"×24"'],
+    base:14.48, retail:35,
+    printInfo:'Polyester canvas surface. Dye sublimation process. Slightly textured weave adds an artist-canvas quality to painterly designs.',
+    tip:'Canvas texture naturally enhances watercolor and painterly art styles — looks like real art print.',
+    tipType:'good',
+    goodStyles:['Botanical','Abstract Art','Watercolor','Line Art','Maximalist Floral','Tropical Leaves','Patchwork'],
+    avoidStyles:['Geometric','Ikat / Aztec','Typography'],
+    goodColors:['Terracotta & Rust','Sage & Moss','Warm Gold','Dusty Lavender','Blush Pink','Deep Brown','Deep Teal','Cream & Ivory','Black & Charcoal','Multi-color Earthy'],
+    avoidColors:[],
+    promptSuffix:'artist canvas style textile design for poly canvas pillowcase, expressive painterly watercolor, canvas grain texture aesthetic, seamless repeat, 300 DPI sRGB, no text no borders'
+  },
+];
+
+const ALL_STYLES = [
+  'Botanical','Maximalist Floral','Geometric','Abstract Art','Watercolor',
+  'Japandi','Boho Mandala','Tropical Leaves','Celestial','Line Art',
+  'Terrazzo','Ikat / Aztec','Patchwork','Animal Print','Vintage Damask','Typography'
+];
+
+const STYLE_PROMPTS = {
+  'Botanical':'delicate botanical repeat pattern, pressed eucalyptus leaves dried flowers fine stems, nature illustration style',
+  'Maximalist Floral':'lush oversized floral pattern, full bloom peonies roses magnolias, richly layered painterly watercolor',
+  'Geometric':'bold geometric interlocking diamond hexagon forms, clean angular Moroccan tile inspired, flat solid shapes',
+  'Abstract Art':'expressive abstract art, organic fluid brushstroke shapes, gallery-quality modern composition',
+  'Watercolor':'loose expressive watercolor washes, organic ink bloom diffusion, soft painterly colour bleeds',
+  'Japandi':'minimalist japandi wabi-sabi, subtle texture calm negative space, refined linen-feel surface',
+  'Boho Mandala':'intricate hand-drawn bohemian mandala, geometric spiritual circular pattern, symmetrical',
+  'Tropical Leaves':'bold tropical foliage, monstera palm leaf bird of paradise, lush maximalist print',
+  'Celestial':'celestial moon phases star constellations crescent sun face, mystical line art',
+  'Line Art':'minimalist single continuous line illustration, botanical or abstract subject, modern gallery style',
+  'Terrazzo':'modern terrazzo stone chip pattern, multicolour fragments on neutral base, Italian stone aesthetic',
+  'Ikat / Aztec':'traditional ikat weave blurred chevron diamond, ethnic artisan textile, bold contrast',
+  'Patchwork':'vintage patchwork quilt blocks, cottagecore florals and geometric squares, heirloom textile',
+  'Animal Print':'abstract leopard cheetah pattern reinterpreted in earthy fashion tones, editorial print',
+  'Vintage Damask':'ornate Victorian damask repeat, floral medallion brocade, antique wallpaper motif',
+  'Typography':'elegant hand-lettered script, calligraphy quote art, serif and script mix on neutral ground',
+};
+
+const SWATCHES = [
+  {name:'Terracotta & Rust',hex:'#C06040'},
+  {name:'Sage & Moss',hex:'#6E9272'},
+  {name:'Warm Gold',hex:'#C4985A'},
+  {name:'Dusty Lavender',hex:'#9B7FB6'},
+  {name:'Blush Pink',hex:'#E8C4B8'},
+  {name:'Deep Brown',hex:'#3E2D1E'},
+  {name:'Deep Teal',hex:'#2B5F6E'},
+  {name:'Cream & Ivory',hex:'#F5E8C8'},
+  {name:'Black & Charcoal',hex:'#1A1612'},
+  {name:'Multi-color Earthy',hex:null,gradient:'linear-gradient(135deg,#C06040,#9B7FB6,#6E9272)'},
+];
+
+// ══════════════════════════════
+// STATE
+// ══════════════════════════════
+let activePillow = PILLOWS[0];
+let activeStyle = 'Botanical';
+let activeColor = 'Terracotta & Rust';
+let numVariations = 1;
+let generatedImages = [];
+let selectedIdx = -1;
+let analyzeBase64 = null;
+let analyzeMime = null;
+let analyzeDataUrl = null;
+let history = JSON.parse(localStorage.getItem('vura_v3_history')||'[]');
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+window.onload = () => {
+  renderPillows();
+  renderStyles();
+  renderSwatches();
+  renderHistory();
+  selectPillow(PILLOWS[0]);
+};
+
+// ══════════════════════════════
+// PILLOW RENDERING
+// ══════════════════════════════
+function renderPillows() {
+  document.getElementById('pillowGrid').innerHTML = PILLOWS.map(p=>`
+    <div class="pillow-card" id="pc_${p.id}" onclick="selectPillow(PILLOWS.find(x=>x.id==='${p.id}'))">
+      <div class="pillow-icon">${p.icon}</div>
+      <div class="pillow-name">${p.name}</div>
+      <div class="pillow-method">
+        <span class="method-dot dot-${p.method==='dye_sub'?'sub':p.method==='dtf'?'dtf':'jac'}"></span>${p.methodLabel}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectPillow(p) {
+  activePillow = p;
+  document.querySelectorAll('.pillow-card').forEach(c=>c.classList.remove('active'));
+  const card = document.getElementById('pc_'+p.id);
+  if(card) card.classList.add('active');
+
+  // Size options
+  const sel = document.getElementById('sizeSelect');
+  sel.innerHTML = p.sizes.map(s=>`<option>${s}</option>`).join('');
+
+  // Print info
+  const infoEl = document.getElementById('printInfo');
+  const tipClass = p.tipType==='good'?'tip-good':p.tipType==='warn'?'tip-warn':'tip-bad';
+  infoEl.style.display='block';
+  infoEl.innerHTML=`<strong>${p.methodLabel}</strong><br>${p.printInfo}<div class="print-tip ${tipClass}" style="margin-top:5px">${p.tip}</div>`;
+
+  // Filter styles and colors
+  filterStyles(p);
+  filterColors(p);
+
+  // Reset active style if it's now disabled
+  if(!p.goodStyles.includes(activeStyle)) {
+    activeStyle = p.goodStyles[0];
+  }
+  document.querySelectorAll('.tag').forEach(t=>{
+    if(t.textContent.trim()===activeStyle) t.classList.add('active');
+    else t.classList.remove('active');
+  });
+
+  // Reset active color if disabled
+  if(p.avoidColors.includes(activeColor)) {
+    activeColor = p.goodColors[0];
+    document.getElementById('colorLabel').textContent = activeColor;
+  }
+  document.querySelectorAll('.swatch').forEach(s=>{
+    s.classList.toggle('active', s.dataset.name===activeColor);
+  });
+
+  buildPrompt();
+}
+
+function filterStyles(p) {
+  document.querySelectorAll('.tag').forEach(tag=>{
+    const style = tag.textContent.trim();
+    const isGood = p.goodStyles.includes(style);
+    const isAvoid = p.avoidStyles.includes(style);
+    tag.classList.remove('disabled','not-ideal','active');
+    if(isAvoid){ tag.classList.add('disabled'); tag.title='Not suitable for '+p.name; }
+    else if(!isGood){ tag.classList.add('not-ideal'); tag.title='May not print ideally on '+p.name; }
+    else { tag.title=''; }
+    if(style===activeStyle && !isAvoid) tag.classList.add('active');
+  });
+  const goodCount = p.goodStyles.length;
+  document.getElementById('styleNote').textContent = `(${goodCount} styles work)`;
+}
+
+function filterColors(p) {
+  document.querySelectorAll('.swatch').forEach(s=>{
+    const name = s.dataset.name;
+    const isAvoid = p.avoidColors.includes(name);
+    s.classList.toggle('disabled', isAvoid);
+    s.title = isAvoid ? 'Not ideal for '+p.name : name;
+  });
+  const avoidCount = p.avoidColors.length;
+  document.getElementById('colorNote').textContent = avoidCount>0?`(${avoidCount} avoided)`:'';
+}
+
+// ══════════════════════════════
+// STYLE TAGS
+// ══════════════════════════════
+function renderStyles() {
+  document.getElementById('styleGrid').innerHTML = ALL_STYLES.map(s=>`
+    <span class="tag" onclick="selectStyle(this,'${s}')">${s}</span>
+  `).join('');
+  document.querySelector('.tag').classList.add('active');
+}
+
+function selectStyle(el,name) {
+  if(el.classList.contains('disabled')) return;
+  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  activeStyle = name;
+  buildPrompt();
+}
+
+// ══════════════════════════════
+// SWATCHES
+// ══════════════════════════════
+function renderSwatches() {
+  document.getElementById('swatchGrid').innerHTML = SWATCHES.map(s=>`
+    <div class="swatch ${s.name===activeColor?'active':''}"
+      style="${s.gradient?'background:'+s.gradient:'background:'+s.hex}"
+      data-name="${s.name}"
+      onclick="selectSwatch(this,'${s.name}')"
+      title="${s.name}">
+    </div>
+  `).join('');
+}
+
+function selectSwatch(el,name) {
+  if(el.classList.contains('disabled')) return;
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  activeColor = name;
+  document.getElementById('colorLabel').textContent = name;
+  buildPrompt();
+}
+
+// ══════════════════════════════
+// PROMPT BUILDER
+// ══════════════════════════════
+function buildPrompt() {
+  if(!activePillow) return;
+  const styleText = STYLE_PROMPTS[activeStyle]||activeStyle;
+  const custom = document.getElementById('customPrompt').value;
+  const size = document.getElementById('sizeSelect').value||activePillow.sizes[0];
+  const customPart = custom ? `, ${custom}` : '';
+  const prompt = `Seamless repeat textile pattern for a ${activePillow.name} (${size}), ${activePillow.name} pillow: ${styleText}, colour palette of ${activeColor}, ${activePillow.promptSuffix}${customPart}. Luxury home decor brand VuraPillows, trending 2026, print-on-demand production ready.`;
+  document.getElementById('promptBox').innerHTML = `<em>${prompt}</em>`;
+}
+
+function surpriseMe() {
+  const p = activePillow;
+  const styles = p.goodStyles;
+  const colors = p.goodColors.filter(c=>!p.avoidColors.includes(c));
+  activeStyle = styles[Math.floor(Math.random()*styles.length)];
+  activeColor = colors[Math.floor(Math.random()*colors.length)];
+  document.querySelectorAll('.tag').forEach(t=>{ t.classList.remove('active'); if(t.textContent.trim()===activeStyle) t.classList.add('active'); });
+  document.querySelectorAll('.swatch').forEach(s=>{ s.classList.remove('active'); if(s.dataset.name===activeColor) s.classList.add('active'); });
+  document.getElementById('colorLabel').textContent = activeColor;
+  buildPrompt();
+  toast('✦ '+activeStyle+' × '+activeColor);
+}
+
+function copyPrompt() {
+  navigator.clipboard.writeText(document.getElementById('promptBox').textContent);
+  toast('✓ Prompt copied');
+}
+
+// ══════════════════════════════
+// GENERATE
+// ══════════════════════════════
+async function generateDesigns() {
+  const apiKey = document.getElementById('apiKey').value.trim();
+  if(!apiKey){ toast('⚠ Enter your OpenRouter API key'); return; }
+  if(!activePillow){ toast('⚠ Select a pillow first'); return; }
+
+  const prompt = document.getElementById('promptBox').textContent.trim();
+  const btn = document.getElementById('genBtn');
+  btn.disabled=true; btn.textContent='⏳ Generating...';
+  hideErr();
+  document.getElementById('progWrap').classList.add('on');
+  document.getElementById('psheet').classList.remove('on');
+  generatedImages=[]; selectedIdx=-1;
+  renderResults([]);
+
+  for(let i=0;i<numVariations;i++){
+    setProg((i/numVariations)*80, `Generating design ${i+1} of ${numVariations}...`);
+    generatedImages.push({status:'loading',url:null,title:`${activeStyle} — ${activeColor} #${i+1}`,pillow:activePillow.name,size:document.getElementById('sizeSelect').value});
+    renderResults(generatedImages);
+
+    try{
+      const varPrompt = i===0 ? prompt : prompt+` (variation ${i+1}, different layout same style)`;
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey,'HTTP-Referer':'https://vurapillows.com','X-Title':'VuraPillows Design Studio'},
+        body:JSON.stringify({
+          model:'black-forest-labs/flux-1.1-pro',
+          messages:[{role:'user',content:[{type:'text',text:varPrompt}]}],
+          modalities:['image']
+        })
+      });
+      const data = await res.json();
+      if(data.error){ generatedImages[i].status='error'; generatedImages[i].error=data.error.message||'API error'; showErr('API: '+data.error.message); }
+      else if(data.choices?.[0]){
+        const msg = data.choices[0].message;
+        let url = msg.images?.[0]?.image_url?.url || msg.images?.[0]?.url;
+        if(!url && Array.isArray(msg.content)){
+          const blk = msg.content.find(b=>b.type==='image_url'||b.type==='image');
+          if(blk) url=blk.image_url?.url||blk.url;
+        }
+        if(url){ generatedImages[i].status='done'; generatedImages[i].url=url; saveHistory(generatedImages[i]); }
+        else { generatedImages[i].status='error'; generatedImages[i].error='No image returned — check credits'; }
+      } else { generatedImages[i].status='error'; generatedImages[i].error='Unexpected response'; }
+    } catch(e){ generatedImages[i].status='error'; generatedImages[i].error=e.message; showErr(e.message); }
+    renderResults(generatedImages);
+  }
+
+  setProg(100,'✓ Done!');
+  setTimeout(()=>{ document.getElementById('progWrap').classList.remove('on'); },2000);
+  btn.disabled=false; btn.textContent='✦ Generate Pillow Designs';
+  const done=generatedImages.filter(g=>g.status==='done').length;
+  if(done>0) toast('✓ '+done+' design'+(done>1?'s':'')+' ready!');
+}
+
+function setProg(pct,msg){ document.getElementById('progFill').style.width=pct+'%'; document.getElementById('progMsg').textContent=msg; }
+function showErr(m){ const b=document.getElementById('errBox'); b.textContent='⚠ '+m; b.classList.add('on'); }
+function hideErr(){ document.getElementById('errBox').classList.remove('on'); }
+
+// ══════════════════════════════
+// RENDER RESULTS
+// ══════════════════════════════
+function renderResults(imgs){
+  const grid=document.getElementById('resultsGrid');
+  const done=imgs.filter(g=>g.status==='done').length;
+  document.getElementById('resultsCount').textContent=done+' design'+(done!==1?'s':'');
+  if(!imgs.length){ grid.innerHTML='<div class="empty"><div class="empty-icon">🎨</div><h3>Designs appear here</h3><p>Pick a pillow, style and color, then generate.</p></div>'; return; }
+  grid.innerHTML=imgs.map((img,i)=>{
+    if(img.status==='loading') return `<div class="img-card"><div class="img-loading"><div class="spin"></div><span>Generating...</span></div><div class="img-body"><div class="img-title">${img.title}</div><div class="img-meta">${img.pillow}</div></div></div>`;
+    if(img.status==='error') return `<div class="img-card"><div class="img-loading" style="background:#fff0ee;padding:12px;text-align:center">❌<br><span style="color:#8b2a1a;font-size:10px">${img.error}</span></div><div class="img-body"><div class="img-title">${img.title}</div></div></div>`;
+    return `<div class="img-card ${selectedIdx===i?'sel':''}" onclick="selectImg(${i})">
+      <img class="img-thumb" src="${img.url}" alt="${img.title}" loading="lazy"/>
+      <div class="img-body">
+        <div class="img-title">${img.title}</div>
+        <div class="img-meta">${img.pillow} · ${img.size}</div>
+        <div class="img-actions">
+          <button class="ia-btn" onclick="event.stopPropagation();dlImg(${i})">⬇</button>
+          <button class="ia-btn" onclick="event.stopPropagation();selectImg(${i})">Details</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectImg(i){
+  selectedIdx=i; renderResults(generatedImages);
+  const img=generatedImages[i]; if(img.status!=='done') return;
+  document.getElementById('psheetImg').src=img.url;
+  document.getElementById('psheetTitle').textContent=img.title;
+  document.getElementById('psheetDesc').textContent=`${img.pillow} · ${img.size} · ${activeStyle} · ${activeColor} · MWW On Demand`;
+  const p=activePillow;
+  document.getElementById('varBody').innerHTML=p.sizes.map(s=>`<tr><td>${s}</td><td>$${p.base}</td><td>$${p.retail}</td><td style="color:var(--sage)">$${(p.retail-p.base-3.99).toFixed(2)}</td><td><span class="badge badge-g">MWW</span></td></tr>`).join('');
+  document.getElementById('psheet').classList.add('on');
+  document.getElementById('psheet').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function dlImg(i){const img=generatedImages[i];if(img&&img.url) doDownload(img.url,img.title);}
+function dlSelected(){if(selectedIdx<0)return;const img=generatedImages[selectedIdx];if(img&&img.url)doDownload(img.url,img.title);}
+function doDownload(url,name){const a=document.createElement('a');a.href=url;a.download=(name||'design')+'.png';a.target='_blank';a.click();toast('⬇ Downloading...');}
+function copySEO(){if(selectedIdx<0)return;const p=activePillow;navigator.clipboard.writeText(`${activeStyle} Pillow Cover | ${activeColor} | ${document.getElementById('sizeSelect').value} | ${p.name.replace('Faux Suede','Luxury Velvet-Look')} | Home Decor | VuraPillows`);toast('✓ SEO title copied');}
+function copyDesc(){if(selectedIdx<0)return;const p=activePillow;const s=document.getElementById('sizeSelect').value;navigator.clipboard.writeText(`Transform your home with this stunning ${activeStyle} throw pillow in ${activeColor}.\n\n✦ ${p.name}\n✦ Size: ${s}\n✦ Style: ${activeStyle}\n✦ Colour palette: ${activeColor}\n✦ Dye sublimation print — permanent, vibrant, fade-resistant\n✦ Made in USA via MWW On Demand\n✦ Ships in 3–7 business days`);toast('✓ Description copied');}
+
+// ══════════════════════════════
+// ANALYZE DESIGN
+// ══════════════════════════════
+function azDragOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag');}
+function azDragLeave(){document.getElementById('dropZone').classList.remove('drag');}
+function azDrop(e){e.preventDefault();document.getElementById('dropZone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/')) processAzFile(f);}
+function azFileChange(e){const f=e.target.files[0];if(f) processAzFile(f); e.target.value='';}
+
+function processAzFile(file){
+  if(file.size>8*1024*1024){toast('⚠ Max 8MB image');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    analyzeDataUrl=ev.target.result;
+    analyzeBase64=analyzeDataUrl.split(',')[1];
+    analyzeMime=file.type;
+    document.getElementById('dzEmpty').style.display='none';
+    const prev=document.getElementById('dzPreview');
+    prev.style.display='block';
+    document.getElementById('dzPreviewImg').src=analyzeDataUrl;
+    document.getElementById('dzFileName').textContent=file.name;
+    document.getElementById('dropZone').classList.add('has-img');
+    document.getElementById('analyzeBtn').disabled=false;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function analyzeDesign(){
+  const apiKey=document.getElementById('apiKey').value.trim();
+  if(!apiKey){toast('⚠ Enter your OpenRouter API key');return;}
+  if(!analyzeBase64){toast('⚠ Upload a design image first');return;}
+  const btn=document.getElementById('analyzeBtn');
+  btn.disabled=true; btn.textContent='🔍 Analyzing...';
+  document.getElementById('analyzeResults').innerHTML='<p style="font-size:12px;color:var(--muted);padding:10px 0">Analyzing your design...</p>';
+
+  const systemPrompt = `You are a professional textile print expert specializing in print-on-demand pillow design. Analyze the uploaded design image and respond ONLY in this exact JSON format with no other text:
+{
+  "extracted_prompt": "A detailed AI image generation prompt that would recreate this design as a pillow textile pattern",
+  "design_style": "one of: Botanical, Maximalist Floral, Geometric, Abstract Art, Watercolor, Japandi, Boho Mandala, Tropical Leaves, Celestial, Line Art, Terrazzo, Ikat/Aztec, Patchwork, Animal Print, Vintage Damask, Typography, Mixed",
+  "color_palette": "describe the main colors in 10 words or less",
+  "best_pillows": ["list 2-3 product names from: Faux Suede Pillow, Faux Suede Pillowcase, Spun Polyester Lumbar, Woven Pillow, Microfiber Pillowcase, Poly Canvas Pillowcase"],
+  "best_reasons": ["one short reason per best pillow matching the order above"],
+  "avoid_pillows": ["list any products to avoid"],
+  "avoid_reasons": ["one short reason per avoided pillow"],
+  "print_warnings": "any colour or design elements that may cause print issues on dye sublimation, or empty string if none"
+}`;
+
+  try{
+    const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey,'HTTP-Referer':'https://vurapillows.com','X-Title':'VuraPillows Design Studio'},
+      body:JSON.stringify({
+        model:'anthropic/claude-opus-4-5',
+        messages:[{role:'user',content:[
+          {type:'image_url',image_url:{url:`data:${analyzeMime};base64,${analyzeBase64}`}},
+          {type:'text',text:'Analyze this pillow design image and respond in the JSON format specified.'}
+        ]}],
+        system:systemPrompt,
+        max_tokens:800
+      })
+    });
+    const data=await res.json();
+    if(data.error){throw new Error(data.error.message);}
+    const text=data.choices?.[0]?.message?.content||'';
+    let result;
+    try{
+      const clean=text.replace(/```json|```/g,'').trim();
+      result=JSON.parse(clean);
+    }catch(e){throw new Error('Could not parse AI response. Try again.');}
+    renderAnalyzeResults(result);
+  }catch(e){
+    document.getElementById('analyzeResults').innerHTML=`<div class="result-card"><h4>Error</h4><p style="color:#8b2a1a">${e.message}</p></div>`;
+  }
+  btn.disabled=false; btn.textContent='🔍 Analyze Design';
+}
+
+function renderAnalyzeResults(r){
+  const bestHTML = (r.best_pillows||[]).map((p,i)=>`
+    <div class="rec-pill best">
+      <div class="rp-label">✓ ${p}</div>
+      <div class="rp-note">${(r.best_reasons||[])[i]||''}</div>
+    </div>`).join('');
+  const avoidHTML = (r.avoid_pillows||[]).map((p,i)=>`
+    <div class="rec-pill avoid">
+      <div class="rp-label">✗ ${p}</div>
+      <div class="rp-note">${(r.avoid_reasons||[])[i]||''}</div>
+    </div>`).join('');
+  const warnHTML = r.print_warnings?`<div class="print-tip tip-warn" style="margin-top:8px;padding:8px 10px;border-radius:7px;font-size:11px">⚠ ${r.print_warnings}</div>`:'';
+
+  document.getElementById('analyzeResults').innerHTML=`
+    <div class="result-card">
+      <h4>🎨 Detected Style</h4>
+      <p><strong>${r.design_style}</strong> · ${r.color_palette}</p>
+    </div>
+    <div class="result-card">
+      <h4>📋 Extracted AI Prompt</h4>
+      <div class="prompt-out" id="extractedPrompt">${r.extracted_prompt}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('extractedPrompt').textContent);toast('✓ Prompt copied')">⎘ Copy Prompt</button>
+        <button class="copy-btn" style="background:var(--terra);color:white;border-color:var(--terra)" onclick="loadExtractedPrompt()">↗ Use in Generator</button>
+      </div>
+    </div>
+    <div class="result-card">
+      <h4>🛋️ Best Pillows for This Design</h4>
+      <div class="pillow-rec">${bestHTML}</div>
+      ${avoidHTML?`<div style="margin-top:8px;"><div class="rp-label" style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase">Avoid</div><div class="pillow-rec">${avoidHTML}</div></div>`:''}
+      ${warnHTML}
+    </div>
+  `;
+  window._extractedPrompt=r.extracted_prompt;
+}
+
+function loadExtractedPrompt(){
+  if(window._extractedPrompt){
+    document.getElementById('customPrompt').value=window._extractedPrompt;
+    buildPrompt();
+    switchTab('generate');
+    toast('✓ Prompt loaded in generator');
+  }
+}
+
+// ══════════════════════════════
+// HISTORY
+// ══════════════════════════════
+function saveHistory(item){
+  history.unshift({...item,date:new Date().toLocaleDateString()});
+  if(history.length>40) history=history.slice(0,40);
+  try{localStorage.setItem('vura_v3_history',JSON.stringify(history));}catch(e){}
+  renderHistory();
+}
+function renderHistory(){
+  const list=document.getElementById('historyList');
+  if(!history.length){list.innerHTML='<div class="empty"><div class="empty-icon">📁</div><h3>No history yet</h3><p>Generated designs save here.</p></div>';return;}
+  list.innerHTML=history.map((item,i)=>`
+    <div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center">
+      <img src="${item.url}" style="width:46px;height:46px;border-radius:6px;object-fit:cover;flex-shrink:0;background:var(--border)" onerror="this.style.display='none'"/>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:500;color:var(--brown);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.title}</div>
+        <div style="font-size:10px;color:var(--muted)">${item.pillow} · ${item.date}</div>
+      </div>
+      <button class="ia-btn" onclick="doDownload('${item.url}','${item.title.replace(/'/g,'')}')">⬇</button>
+    </div>
+  `).join('');
+}
+function clearHistory(){if(!confirm('Clear history?'))return;history=[];localStorage.removeItem('vura_v3_history');renderHistory();}
+
+// ══════════════════════════════
+// TABS / UTILS
+// ══════════════════════════════
+function switchTab(name){
+  const names=['generate','analyze','history'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+function toggleKey(){const i=document.getElementById('apiKey');i.type=i.type==='password'?'text':'password';}
+function setNum(el,n){document.querySelectorAll('.num-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');numVariations=n;}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2800);}
+</script>
+</body>
+</html>
